@@ -10,8 +10,7 @@
 apt-get install xtables-addons-common libtext-csv-xs-perl unzip
 
 #raspberry >>  raspberrypi-kernel-headers
-# sudo apt-get install module-assistant
-# sudo module-assistant --verbose --text-mode auto-install xtables-addons
+#rpi-source  https://www.raspberrypi.org/forums/viewtopic.php?t=143531
 
 # Create the directory where the country data should live
 mkdir /usr/share/xt_geoip
