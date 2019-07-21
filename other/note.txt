@@ -2,7 +2,13 @@
 
 #apt-get install -yyq vim wget openssl libssl-dev cmake gcc g++ git libtool gcc-arm-linux-gnueabi
 
-./configure OPENSSL_CFLAGS=-I/path/to/openssl/include OPENSSL_LIBS="-L/path/to/openssl/lib -lssl -lcrypto" --prefix=/path/to/libevent
+#./configure OPENSSL_CFLAGS=-I/path/to/openssl/include OPENSSL_LIBS="-L/path/to/openssl/lib -lssl -lcrypto" --prefix=/path/to/libevent
+
+
+
+
+
+
 
 
 
