@@ -1,0 +1,76 @@
+#build libevent 
+
+#apt-get install -yyq vim wget openssl libssl-dev cmake gcc g++ git libtool gcc-arm-linux-gnueabi
+
+./configure OPENSSL_CFLAGS=-I/path/to/openssl/include OPENSSL_LIBS="-L/path/to/openssl/lib -lssl -lcrypto" --prefix=/path/to/libevent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#!/bin/bash
+
+# uthash
+cd /tmp
+git clone https://github.com/troydhanson/uthash
+
+# base64
+cd /tmp
+git clone https://github.com/aklomp/base64
+cd base64
+make
+
+# openssl
+cd /tmp
+wget https://www.openssl.org/source/openssl-1.1.0i.tar.gz
+tar xvf openssl-1.1.0i.tar.gz
+cd openssl-1.1.0i
+./Configure linux-x86_64 --prefix=/tmp/openssl --openssldir=/tmp/openssl no-shared # for linux x86_64
+make -j`nproc` && make install -j`nproc`
+
+# libevent
+cd /tmp
+git clone https://github.com/libevent/libevent libevent-sources
+cd libevent-sources
+./autogen.sh
+./configure OPENSSL_CFLAGS=-I/path/to/openssl/include OPENSSL_LIBS="-L/tmp/openssl/lib -lssl -lcrypto" -prefix=/tmp/libevent --enable-shared=no --enable-static=yes --disable-samples --disable-debug-mode --disable-malloc-replacement
+###./configure --prefix=/tmp/libevent --enable-shared=no --enable-static=yes --disable-samples --disable-debug-mode --disable-malloc-replacement CPPFLAGS='-I/tmp/openssl/include' LDFLAGS='-L/tmp/openssl/lib' LIBS='-lssl -lcrypto -ldl'
+make && make install
+
+# tls-proxy
+cd /tmp
+git clone https://github.com/zfl9/tls-proxy
+
+git clone https://github.com/TanNang/tls-proxy tlsp
+
+cp /tmp/tlsp/tls-server.c /tmp/tls-proxy/
+cp /tmp/tlsp/tls-client.c /tmp/tls-proxy/
+
+cd tls-proxy
+gcc -I/tmp/uthash/include -I/tmp/base64/include -I/tmp/libevent/include -std=c11 -Wall -Wextra -Wno-format-overflow -O3 -s -pthread -o tls-server tls-server.c /tmp/base64/lib/libbase64.o /tmp/libevent/lib/libevent.a
+gcc -I/tmp/uthash/include -I/tmp/base64/include -I/tmp/libevent/include -I/tmp/openssl/include -std=c11 -Wall -Wextra -Wno-format-overflow -O3 -s -pthread -o tls-client tls-client.c /tmp/base64/lib/libbase64.o /tmp/libevent/lib/libevent.a /tmp/libevent/lib/libevent_openssl.a /tmp/openssl/lib/libssl.a /tmp/openssl/lib/libcrypto.a -ldl
+##cp -af tls-client tls-server /usr/local/bin
